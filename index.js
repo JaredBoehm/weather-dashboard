@@ -1,10 +1,15 @@
+/// global vars
+//#region 
 const APIKEY = 'fb78b53d623d22b51dfcf6a5963908ad'
+
 // html elements
 const searchInput = document.querySelector('#search-input')
 const searchButton = document.querySelector('#search-button')
 const quickLinks = document.querySelector('#quick-links')
 const currentWeatherSection = document.querySelector('#current-weather')
 const forecastSection = document.querySelector('#forecast')
+//#endregion
+
 
 /// build api endpoints
 //#region 
@@ -26,7 +31,6 @@ function getForecastEndpoint(lat, lon, apiKey) {
 //#region 
 
 // fetch helpers
-//#region 
 function formatWeatherObject(weatherObject) {
     let date = new Date(weatherObject.dt * 1000) // converts to ms as date comes down in unix format (seconds, instead of ms like javascript), then create new date object
     let icon = `https://openweathermap.org/img/w/${weatherObject.weather[0].icon}.png`
@@ -41,8 +45,9 @@ function formatWeatherObject(weatherObject) {
         humidity
     }
 }
-//#endregion
 
+
+// building blocks
 async function fetchCityLatLon(cityName) {
     try {
         let endpoint = getGeocodingEndpoint(cityName, APIKEY)
@@ -79,6 +84,7 @@ async function fetchLatLonForecast(lat, lon) {
     }
 }
 
+// main function
 async function getCityWeather(cityName) {
     let { lat, lon } = await fetchCityLatLon(cityName)
     let currentWeather = await fetchLatLonCurrentWeather(lat, lon)
@@ -94,15 +100,11 @@ function renderCurrentWeather(weatherObject) {
     currentWeatherSection.innerHTML = `
         <h2>Current Weather</h2>
         <div class="weather-card">
-            <div class="weather-card-header">
-                <h3>${weatherObject.date.toLocaleDateString()}</h3>
-                <img src="${weatherObject.icon}" alt="weather icon">
-            </div>
-            <div class="weather-card-body">
-                <p>Temperature: ${weatherObject.temp}</p>
-                <p>Wind: ${weatherObject.wind}</p>
-                <p>Humidity: ${weatherObject.humidity}</p>
-            </div>
+            <h3>${weatherObject.date.toLocaleDateString()}</h3>
+            <img src="${weatherObject.icon}" alt="weather icon">
+            <p>Temperature: ${weatherObject.temp}</p>
+            <p>Wind: ${weatherObject.wind}</p>
+            <p>Humidity: ${weatherObject.humidity}</p>
         </div>
     `
 }
@@ -115,15 +117,11 @@ function renderForecast(forecastArray) {
         let forecast = forecastArray[i]
         forecastSection.innerHTML += `
             <div class="weather-card">
-                <div class="weather-card-header">
-                    <h3>${forecast.date.toLocaleDateString()}</h3>
-                    <img src="${forecast.icon}" alt="weather icon">
-                </div>
-                <div class="weather-card-body">
-                    <p>Temperature: ${forecast.temp}</p>
-                    <p>Wind: ${forecast.wind}</p>
-                    <p>Humidity: ${forecast.humidity}</p>
-                </div>
+                <h3>${forecast.date.toLocaleDateString()}</h3>
+                <img src="${forecast.icon}" alt="weather icon">
+                <p>Temperature: ${forecast.temp}</p>
+                <p>Wind: ${forecast.wind}</p>
+                <p>Humidity: ${forecast.humidity}</p>
             </div>
         `
     }
